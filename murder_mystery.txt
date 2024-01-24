@@ -4,9 +4,6 @@ Completed by Alexandria Mayer on 9/26/2023
 
 https://mystery.knightlab.com/
 
-Post story on LinkedIn once FMLA is over:
-
-"White Knight's #SQL Murder Mystery game was a lot of fun, and a great chance for me to practice my SQL skills. It's a great reminder how I love the problem-solving aspects of #DataAnalysis"
 
 SELECT description 
 FROM crime_scene_report
