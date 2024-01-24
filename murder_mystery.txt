@@ -1,0 +1,234 @@
+#murder
+
+Completed by Alexandria Mayer on 9/26/2023
+
+https://mystery.knightlab.com/
+
+Post story on LinkedIn once FMLA is over:
+
+"White Knight's #SQL Murder Mystery game was a lot of fun, and a great chance for me to practice my SQL skills. It's a great reminder how I love the problem-solving aspects of #DataAnalysis"
+
+SELECT description 
+FROM crime_scene_report
+WHERE date = '20180115' 
+AND type = 'murder'
+
+#description: "Security footage shows that there were 2 witnesses. The first witness lives at the last house on "Northwestern Dr". The second witness, named Annabel, lives somewhere on "Franklin Ave"." <- SQL City
+
+#"Mama, I killed a man, put a gun against his head..." <-- Reno
+
+#"Life? Dont talk to me about life." <-- Albany
+
+SELECT id 
+FROM person
+WHERE address_street_name = 'Franklin Ave' 
+AND name = 'Annabel Miller'
+
+#ID 16371
+
+SELECT address_number 
+FROM person
+WHERE address_street_name = 'Northwestern Dr'
+ORDER BY address_number DESC
+
+# Northwest Dr highest/last address number = 4919
+
+
+SELECT name
+FROM person
+WHERE address_street_name = 'Northwestern Dr' AND address_number = '4919'
+
+#'Morty Schapiro'
+#ID 14887
+
+SELECT transcript
+FROM interview
+WHERE person_id LIKE '16371'
+
+#transcript: "I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th."
+
+SELECT transcript
+FROM interview
+WHERE person_id LIKE '14887'
+
+#transcript: I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W".
+
+#Jan 9th checkin
+
+SELECT membership_id
+FROM get_fit_now_check_in
+WHERE check_in_date LIKE '20180109'
+
+#member ids: X0643
+UK1F2
+XTE42
+1AE2H
+6LSTG
+7MWHJ
+GE5Q8
+48Z7A <- person id 28819, gold, Joe Germuska, license ID 173289
+48Z55 <- person id 67318, gold, Jeremy Bowers, license ID 423327, plate number 0H42W2, gender male <- this is the prime suspect
+90081
+
+##48Z7A search
+
+SELECT license_id
+FROM person
+WHERE id LIKE '28819'
+
+# 173289
+
+SELECT transcript
+FROM interview
+WHERE person_id LIKE '28819'
+
+# No data returned
+
+SELECT plate_number
+FROM drivers_license
+WHERE id LIKE '173289'
+
+# No data returned
+
+
+#48Z55 search
+
+SELECT person_id
+FROM get_fit_now_member
+WHERE id LIKE '48Z55'
+
+SELECT name
+FROM get_fit_now_member
+WHERE id LIKE '48Z55'
+
+SELECT license_id
+FROM person
+WHERE ID LIKE '67318'
+
+SELECT transcript
+FROM interview
+WHERE person_id LIKE '67318'
+
+# "I was hired by a woman with a lot of money. I don't know her name but I know she's around 5'5" (65") or 5'7" (67"). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017. "
+
+SELECT gender
+FROM drivers_license
+WHERE id LIKE '423327'
+
+#gender male
+
+SELECT plate_number
+FROM drivers_license
+WHERE id LIKE '423327'
+
+#plate number 0H42W2
+
+#this matches the testimonies. Now I need to figure out who the client was.
+
+#Client search
+
+SELECT *
+FROM drivers_license
+WHERE car_make LIKE 'Tesla'
+AND car_model LIKE 'Model S'
+
+#id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
+#202298	68	66	green		red		female	500123		Tesla		Model S
+#918773	48	65	black		red		female	917UU3		Tesla		Model S
+
+#202298 search
+
+SELECT name
+FROM person
+WHERE license_id IS '202298'
+
+#name
+Miranda Priestly
+
+SELECT id
+FROM person
+WHERE license_id IS '202298'
+
+#id 99716
+
+SELECT ssn
+FROM person
+WHERE license_id IS '202298'
+
+#ssn 987756388
+
+SELECT annual_income
+FROM income
+WHERE ssn IS '987756388'
+
+#annual_income 310000
+
+SELECT event_name
+FROM facebook_event_checkin
+WHERE person_id LIKE '99716'
+
+#event_name
+
+SQL Symphony Concert
+SQL Symphony Concert
+SQL Symphony Concert
+
+SELECT date
+FROM facebook_event_checkin
+WHERE person_id LIKE '99716'
+
+#date
+
+20171206
+20171212
+20171229
+
+#918773, just to be thorough
+
+SELECT name
+FROM person
+WHERE license_id IS '918773'
+
+#name Red Korb
+
+SELECT id
+FROM person
+WHERE license_id IS '918773'
+
+#id 78881
+
+SELECT ssn
+FROM person
+WHERE license_id IS '918773'
+
+#ssn 961388910
+
+SELECT annual_income
+FROM income
+WHERE ssn IS '961388910'
+
+#annual_income 278000
+
+SELECT event_name
+FROM facebook_event_checkin
+WHERE person_id LIKE '78881'
+
+#no data returned
+
+#Jeremy Bowers is the likely killer, Miranda Priestly is the client who contracted him for the hit job.
+
+INSERT INTO solution VALUES (1, 'Jeremy Bowers');
+        
+        SELECT value FROM solution;
+
+value
+
+#"Congrats, you found the murderer! But wait, there's more... If you think you're up for a challenge, try querying the interview transcript of the murderer to find the real villain behind this crime. If you feel especially confident in your SQL skills, try to complete this final step with no more than 2 queries. Use this same INSERT statement with your new suspect to check your answer."
+
+INSERT INTO solution VALUES (1, 'Miranda Priestly');
+        
+        SELECT value FROM solution;
+
+value
+
+#Congrats, you found the brains behind the murder! Everyone in SQL City hails you as the greatest SQL detective of all time. Time to break out the champagne!
